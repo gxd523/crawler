@@ -1,7 +1,7 @@
 package test
 
 import (
-	"demos/crawler/parser"
+	"crawler/parser"
 	"io/ioutil"
 	"testing"
 )
