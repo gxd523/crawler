@@ -2,7 +2,7 @@ package engine
 
 import (
 	"crawler/fetcher"
-	"fmt"
+	"crawler/model"
 	"log"
 )
 
@@ -14,9 +14,7 @@ func Start(seeds ...Request) int {
 
 	for len(queue) > 0 {
 		req := queue.Pop()
-		if req.Url == "" {
-			continue
-		}
+
 		log.Printf("left request count=%d, Fetching->%s...%s\n", len(queue), req.Name, req.Url)
 		bytes, err := fetcher.Fetch(req.Url)
 		if err != nil {
@@ -24,14 +22,13 @@ func Start(seeds ...Request) int {
 			continue
 		}
 		successfulFetchedCount++
-		requests := req.ParseFunc(bytes)
-		queue.Push(requests...)
+		parseResult := req.ParseFunc(bytes)
+		queue.Push(parseResult.Requests...)
 
-		fmt.Print("[")
-		for _, req := range requests {
-			fmt.Printf("%s ", req.Name)
+		emptyUserInfo := model.UserInfo{}
+		if parseResult.UserProfile != emptyUserInfo {
+			parseResult.UserProfile.Print()
 		}
-		fmt.Println("]")
 	}
 
 	return successfulFetchedCount

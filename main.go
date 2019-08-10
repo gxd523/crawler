@@ -9,6 +9,7 @@ import (
 func main() {
 	successfulFetchedCount := engine.Start(engine.Request{
 		Url:       "http://www.zhenai.com/zhenghun",
+		Name:      "城市列表",
 		ParseFunc: parser.ParseCityList,
 	})
 

@@ -8,18 +8,24 @@ import (
 // <a href="http://www.zhenai.com/zhenghun/sanya" data-v-5e16505f>三亚</a>
 const cityListRegex = `<a[\s]+href="(http://www.zhenai.com/zhenghun/[\w]+)" [^>]*>([^<]+)</a>`
 
-func ParseCityList(bytes []byte) []engine.Request {
+var limit = 10
+
+func ParseCityList(bytes []byte) engine.ParseResult {
 	compile := regexp.MustCompile(cityListRegex)
 	cityListSubMatches := compile.FindAllSubmatch(bytes, -1)
 
-	var requests []engine.Request
+	parseResult := engine.ParseResult{}
 	for _, citySubMatches := range cityListSubMatches {
-		requests = append(requests, engine.Request{
+		parseResult.Requests = append(parseResult.Requests, engine.Request{
 			Url:       string(citySubMatches[1]),
 			Name:      string(citySubMatches[2]),
 			ParseFunc: ParseUserList,
 		})
+		limit--
+		if limit == 0 {
+			break
+		}
 	}
 
-	return requests
+	return parseResult
 }
