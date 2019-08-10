@@ -7,6 +7,7 @@ import (
 	"strconv"
 )
 
+// <div class="des f-cl" data-v-3c42fade>阿坝 | 26岁 | 大学本科 | 离异 | 156cm | 12001-20000元</div>
 const userInfoRegex = `<div[\s]+class="des f-cl"\s[\w-]+>([\p{Han}]+)\s\|\s([\d]{2})岁\s\|\s([\p{Han}]+)\s\|\s([\p{Han}]+)\s\|\s([\d]{3})cm\s\|\s([^<]+)</div>`
 
 var userInfoCompile = regexp.MustCompile(userInfoRegex)

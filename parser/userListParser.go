@@ -5,6 +5,7 @@ import (
 	"regexp"
 )
 
+// <a href="http://album.zhenai.com/u/1599085703" target="_blank">伟伟</a>
 const userListRegex = `<a[\s]+href="(http://album.zhenai.com/u/[\d]+)"[^>]*>([^<]+)</a>`
 
 func ParseUserList(bytes []byte) engine.ParseResult {
