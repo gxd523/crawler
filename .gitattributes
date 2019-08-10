@@ -1,1 +1,2 @@
-* -text
+*.js linguist-language=Go
+*.html linguist-language=Go
