@@ -20,9 +20,9 @@ type UserInfo struct {
 	Xinzuo     string
 }
 
-func (u *UserInfo) Print() {
+func (u *UserInfo) Print(index int) {
 	log.Printf(
-		"{姓名:%s,性别:%s,年龄:%d,身高:%dcm,体重:%dkg,收入:%s,婚姻状况:%s,教育状况:%s,工作地%s,籍贯%s,房子:%s,车子:%s,星座:%s}",
-		u.Name, u.Gender, u.Age, u.Height, u.Weight, u.Income, u.Marriage, u.Education, u.Occupation, u.Birthplace, u.House, u.Car, u.Xinzuo,
+		"第%d个->{姓名:%s,性别:%s,年龄:%d,身高:%dcm,体重:%dkg,收入:%s,婚姻状况:%s,教育状况:%s,工作地%s,籍贯%s,房子:%s,车子:%s,星座:%s}",
+		index, u.Name, u.Gender, u.Age, u.Height, u.Weight, u.Income, u.Marriage, u.Education, u.Occupation, u.Birthplace, u.House, u.Car, u.Xinzuo,
 	)
 }

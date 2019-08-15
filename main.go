@@ -3,15 +3,19 @@ package main
 import (
 	"crawler/engine"
 	"crawler/parser"
-	"log"
+	"crawler/persist"
+	"crawler/scheduler"
 )
 
 func main() {
-	successfulFetchedCount := engine.Start(engine.Request{
-		Url:       "http://www.zhenai.com/zhenghun",
-		Name:      "城市列表",
-		ParseFunc: parser.ParseCityList,
-	})
+	myEngine := engine.ConcurrentEngine{
+		Scheduler:   &scheduler.QueueScheduler{},
+		WorkerCount: 99,
+		ItemChan:    persist.ItemSaver(),
+	}
 
-	log.Printf("successful fetched %d url!", successfulFetchedCount)
+	myEngine.Start(engine.Request{
+		Url:       "http://www.zhenai.com/zhenghun/shanghai",
+		Name:      "上海",
+		ParseFunc: parser.ParseUserList,})
 }

@@ -10,7 +10,7 @@ type Request struct {
 
 type ParseResult struct {
 	Requests    []Request
-	UserProfile model.UserInfo
+	UserProfile *model.UserInfo
 }
 
 type RequestQueue []Request

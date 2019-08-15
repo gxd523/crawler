@@ -10,9 +10,13 @@ import (
 	"golang.org/x/text/transform"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
+var rateLimiter = time.Tick(100 * time.Millisecond)
+
 func Fetch(url string) ([]byte, error) {
+	<-rateLimiter
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
@@ -21,7 +25,9 @@ func Fetch(url string) ([]byte, error) {
 		"User-Agent",
 		"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.2 Safari/605.1.15",
 	)
-	client := http.Client{}
+	client := http.Client{
+		Timeout: 2 * time.Second,
+	}
 	resp, err := client.Do(request)
 	if err != nil {
 		return nil, err

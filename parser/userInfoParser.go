@@ -29,5 +29,5 @@ func ParseUserInfo(bytes []byte, name string) engine.ParseResult {
 		}
 		userInfo.Income = string(userInfoSubMatches[6])
 	}
-	return engine.ParseResult{UserProfile: userInfo,}
+	return engine.ParseResult{UserProfile: &userInfo,}
 }

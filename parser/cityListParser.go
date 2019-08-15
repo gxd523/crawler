@@ -8,8 +8,6 @@ import (
 // <a href="http://www.zhenai.com/zhenghun/sanya" data-v-5e16505f>三亚</a>
 const cityListRegex = `<a[\s]+href="(http://www.zhenai.com/zhenghun/[\w]+)" [^>]*>([^<]+)</a>`
 
-var limit = 10
-
 func ParseCityList(bytes []byte) engine.ParseResult {
 	compile := regexp.MustCompile(cityListRegex)
 	cityListSubMatches := compile.FindAllSubmatch(bytes, -1)
@@ -21,10 +19,6 @@ func ParseCityList(bytes []byte) engine.ParseResult {
 			Name:      string(citySubMatches[2]),
 			ParseFunc: ParseUserList,
 		})
-		limit--
-		if limit == 0 {
-			break
-		}
 	}
 
 	return parseResult
