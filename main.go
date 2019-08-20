@@ -15,7 +15,7 @@ func main() {
 	}
 
 	myEngine.Start(engine.Request{
-		Url:       "http://www.zhenai.com/zhenghun/shanghai",
-		Name:      "上海",
-		ParseFunc: parser.ParseUserList,})
+		Url:       "http://www.zhenai.com/zhenghun",
+		Name:      "城市列表",
+		ParseFunc: parser.ParseCityList})
 }

@@ -1,14 +1,13 @@
-package test
+package parser
 
 import (
-	"crawler/parser"
 	"io/ioutil"
 	"testing"
 )
 
 func TestParseCityList(t *testing.T) {
 	bytes, _ := ioutil.ReadFile("cityListParser_data.html")
-	parseResult := parser.ParseCityList(bytes)
+	parseResult := ParseCityList(bytes)
 
 	const expectedCount = 470
 	if len(parseResult.Requests) != expectedCount {
