@@ -1,7 +1,7 @@
 package engine
 
 import (
-	"crawler/fetcher"
+	"crawler/model"
 	"log"
 )
 
@@ -21,22 +21,14 @@ func (*SimpleEngine) Start(seeds ...Request) {
 		if parseResult, err := work(req); err == nil {
 			queue.Push(parseResult.Requests...)
 
-			if parseResult.UserProfile != nil {
+			if parseResult.Item != nil {
 				count++
-				parseResult.UserProfile.Print(count)
+				userInfo := parseResult.Item.Payload.(model.UserInfo)
+				userInfo.Print(req.Url, count)
 			}
 		} else {
 			log.Printf("Fetching Error! url=%s error=%v\n", req.Url, err)
 			continue
 		}
-	}
-}
-
-func work(req Request) (*ParseResult, error) {
-	if bytes, err := fetcher.Fetch(req.Url); err == nil {
-		parseResult := req.ParseFunc(bytes)
-		return &parseResult, nil
-	} else {
-		return nil, err
 	}
 }

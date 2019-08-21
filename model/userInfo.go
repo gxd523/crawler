@@ -1,6 +1,7 @@
 package model
 
 import (
+	"encoding/json"
 	"log"
 )
 
@@ -9,7 +10,6 @@ type UserInfo struct {
 	Gender     string
 	Age        int
 	Height     int
-	Weight     int
 	Income     string
 	Marriage   string
 	Education  string
@@ -20,9 +20,17 @@ type UserInfo struct {
 	Xinzuo     string
 }
 
-func (u *UserInfo) Print(index int) {
-	log.Printf(
-		"第%d个->{姓名:%s,性别:%s,年龄:%d,身高:%dcm,体重:%dkg,收入:%s,婚姻状况:%s,教育状况:%s,工作地%s,籍贯%s,房子:%s,车子:%s,星座:%s}",
-		index, u.Name, u.Gender, u.Age, u.Height, u.Weight, u.Income, u.Marriage, u.Education, u.Occupation, u.Birthplace, u.House, u.Car, u.Xinzuo,
-	)
+func (u *UserInfo) Print(url string, index int) {
+	log.Printf("%s\n%d...%+v", url, index, u)
+}
+
+func FromJsonObj(obj interface{}) (UserInfo, error) {
+	var userInfo UserInfo
+	bytes, err := json.Marshal(obj)
+	if err != nil {
+		return userInfo, err
+	}
+
+	err = json.Unmarshal(bytes, &userInfo)
+	return userInfo, err
 }

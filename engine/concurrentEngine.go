@@ -1,14 +1,13 @@
 package engine
 
 import (
-	"crawler/model"
 	"log"
 )
 
 type ConcurrentEngine struct {
 	Scheduler   Scheduler
 	WorkerCount int
-	ItemChan    chan model.UserInfo
+	ItemChan    chan Item
 }
 
 var visitedUrlMap = make(map[string]bool)
@@ -24,8 +23,8 @@ func (engine *ConcurrentEngine) Start(seeds ...Request) {
 	engine.submitRequest(seeds)
 
 	for parseResult := range resultChan {
-		if parseResult.UserProfile != nil {
-			go func() { engine.ItemChan <- *parseResult.UserProfile }()
+		if parseResult.Item != nil {
+			go func() { engine.ItemChan <- *parseResult.Item }()
 		}
 
 		engine.submitRequest(parseResult.Requests)
@@ -56,7 +55,6 @@ func doWork(notifier WorkerReadyNotifier, requestChan chan Request, resultChan c
 		for {
 			notifier.WorkerReady(requestChan)
 			req := <-requestChan
-			log.Printf("Fetching->%s...%s\n", req.Name, req.Url)
 			if parseResult, err := work(req); err == nil {
 				resultChan <- *parseResult
 			} else {

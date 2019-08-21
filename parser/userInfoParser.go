@@ -7,12 +7,20 @@ import (
 	"strconv"
 )
 
-// <div class="des f-cl" data-v-3c42fade>阿坝 | 26岁 | 大学本科 | 离异 | 156cm | 12001-20000元</div>
-const userInfoRegex = `<div[\s]+class="des f-cl"\s[\w-]+>([\p{Han}]+)\s\|\s([\d]{2})岁\s\|\s([\p{Han}]+)\s\|\s([\p{Han}]+)\s\|\s([\d]{3})cm\s\|\s([^<]+)</div>`
+const (
+	// <div class="des f-cl" data-v-3c42fade>阿坝 | 26岁 | 大学本科 | 离异 | 156cm | 12001-20000元</div>
+	userInfoRegex = `<div[\s]+class="des f-cl"\s[\w-]+>([\p{Han}]+)\s\|\s([\d]{2})岁\s\|\s([\p{Han}]+)\s\|\s([\p{Han}]+)\s\|\s([\d]{3})cm\s\|\s([^<]+)</div>`
 
-var userInfoCompile = regexp.MustCompile(userInfoRegex)
+	// http://album.zhenai.com/u/1599085703
+	idRegex = `http://album.zhenai.com/u/([\d]+)`
+)
 
-func ParseUserInfo(bytes []byte, name string) engine.ParseResult {
+var (
+	userInfoCompile = regexp.MustCompile(userInfoRegex)
+	idCompile       = regexp.MustCompile(idRegex)
+)
+
+func ParseUserInfo(bytes []byte, name string, url string) engine.ParseResult {
 	userInfoSubMatches := userInfoCompile.FindSubmatch(bytes)
 
 	userInfo := model.UserInfo{}
@@ -29,5 +37,11 @@ func ParseUserInfo(bytes []byte, name string) engine.ParseResult {
 		}
 		userInfo.Income = string(userInfoSubMatches[6])
 	}
-	return engine.ParseResult{UserProfile: &userInfo}
+	item := engine.Item{
+		Type:    "zhenai",
+		Id:      idCompile.FindStringSubmatch(url)[1],
+		Url:     url,
+		Payload: userInfo,
+	}
+	return engine.ParseResult{Item: &item}
 }

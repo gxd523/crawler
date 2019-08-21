@@ -18,18 +18,15 @@ var (
 	userListPageCompile = regexp.MustCompile(userListPageRegex)
 )
 
-func ParseUserList(bytes []byte) engine.ParseResult {
+func ParseUserList(bytes []byte, _ string) engine.ParseResult {
 	userListSubMatches := userListCompile.FindAllSubmatch(bytes, -1)
 
 	parseResult := engine.ParseResult{}
 	for _, userSubMatches := range userListSubMatches {
-		userName := string(userSubMatches[2])
 		parseResult.Requests = append(parseResult.Requests, engine.Request{
-			Url:  string(userSubMatches[1]),
-			Name: userName,
-			ParseFunc: func(bytes []byte) engine.ParseResult { // 编程技巧
-				return ParseUserInfo(bytes, userName)
-			},
+			Url:       string(userSubMatches[1]),
+			Name:      string(userSubMatches[2]),
+			ParseFunc: ParseUserInfoWrapper(string(userSubMatches[2])),
 		})
 	}
 
@@ -42,4 +39,10 @@ func ParseUserList(bytes []byte) engine.ParseResult {
 		})
 	}
 	return parseResult
+}
+
+func ParseUserInfoWrapper(name string) engine.ParseFunc { // 编程技巧
+	return func(bytes []byte, url string) engine.ParseResult {
+		return ParseUserInfo(bytes, name, url)
+	}
 }

@@ -1,16 +1,23 @@
 package engine
 
-import "crawler/model"
+type Item struct {
+	Type    string
+	Id      string
+	Url     string
+	Payload interface{}
+}
+
+type ParseFunc func(bytes []byte, url string) ParseResult
 
 type Request struct {
 	Url       string
 	Name      string
-	ParseFunc func([]byte) ParseResult // 编程技巧，函数式编程
+	ParseFunc ParseFunc // 编程技巧，函数式编程
 }
 
 type ParseResult struct {
-	Requests    []Request
-	UserProfile *model.UserInfo
+	Requests []Request
+	Item     *Item
 }
 
 type RequestQueue []Request

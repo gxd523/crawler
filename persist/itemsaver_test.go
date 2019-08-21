@@ -2,32 +2,35 @@ package persist
 
 import (
 	"context"
+	"crawler/engine"
 	"crawler/model"
-	"crawler/src/github.com/olivere/elastic"
 	"encoding/json"
+	"gopkg.in/olivere/elastic.v6"
 	"testing"
 )
 
 func TestSave(t *testing.T) {
-	expectedUserInfo := model.UserInfo{
-		Name:       "郭晓东",
-		Gender:     "male",
-		Age:        28,
-		Height:     176,
-		Weight:     60,
-		Income:     "1-2W",
-		Marriage:   "married",
-		Education:  "college",
-		Occupation: "Hangzhou",
-		Birthplace: "Xinjiang",
-		House:      "Yes",
-		Car:        "No",
-		Xinzuo:     "Gemini",
+	expectedItem := engine.Item{
+		Type: "zhenai",
+		Id:   "",
+		Url:  "",
+		Payload: model.UserInfo{
+			Name:       "郭晓东",
+			Gender:     "male",
+			Age:        28,
+			Height:     176,
+			Income:     "1-2W",
+			Marriage:   "married",
+			Education:  "college",
+			Occupation: "Hangzhou",
+			Birthplace: "Xinjiang",
+			House:      "Yes",
+			Car:        "No",
+			Xinzuo:     "Gemini",
+		},
 	}
-	id, err := save(expectedUserInfo)
-	if err != nil {
-		panic(err)
-	}
+
+	const index = "dating_test"
 
 	// TODO Try to start up elastic search(here using docker go client.)
 	client, err := elastic.NewClient(
@@ -35,23 +38,33 @@ func TestSave(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
+
+	err = save(expectedItem, client, index)
+	if err != nil {
+		panic(err)
+	}
+
 	result, err := client.Get().
-		Index("dating_userinfo").
-		Type("zhenai").
-		Id(id).
+		Index(expectedItem.Id).
+		Type(expectedItem.Type).
+		Id(expectedItem.Id).
 		Do(context.Background())
 
 	if err != nil {
 		panic(err)
 	}
 
-	var actualUserInfo model.UserInfo
-	err = json.Unmarshal(result.Source, &actualUserInfo)
+	var actualItem engine.Item
+	err = json.Unmarshal(*result.Source, &actualItem)
 	if err != nil {
 		panic(err)
 	}
 
-	if expectedUserInfo != actualUserInfo {
-		t.Errorf("got %+v, expected %v", actualUserInfo, expectedUserInfo)
+	// 别扭操作
+	actualUserInfo, _ := model.FromJsonObj(actualItem.Payload)
+	actualItem.Payload = actualUserInfo
+
+	if expectedItem != actualItem {
+		t.Errorf("got %+v, expected %v", actualItem, expectedItem)
 	}
 }

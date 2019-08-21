@@ -8,10 +8,14 @@ import (
 )
 
 func main() {
+	itemChan, err := persist.ItemSaver("dating_userinfo")
+	if err != nil {
+		panic(err)
+	}
 	myEngine := engine.ConcurrentEngine{
 		Scheduler:   &scheduler.QueueScheduler{},
 		WorkerCount: 99,
-		ItemChan:    persist.ItemSaver(),
+		ItemChan:    itemChan,
 	}
 
 	myEngine.Start(engine.Request{
