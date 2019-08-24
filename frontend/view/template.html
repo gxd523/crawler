@@ -37,15 +37,19 @@
                     <td><a href="{{.Url}}">{{.Payload.Name}}</a></td>
                     {{with .Payload}}
                         <td>{{.Gender}}</td>
-                        <td>{{.Age}}</td>
+                        <td>{{.Age}}岁</td>
                         <td>{{.Height}}cm</td>
-                        <td>{{.Income}}</td>
-                        <td>{{.Education}}</td>
-                        <td>{{.Occupation}}</td>
+                        <td>{{.Weight}}kg</td>
                         <td>{{.Birthplace}}</td>
                         <td>{{.Xinzuo}}</td>
+                        <td>{{.City}}</td>
+                        <td>{{.Nationality}}</td>
+                        <td>{{.Education}}</td>
+                        <td>{{.Marriage}}</td>
+                        <td>{{.Income}}</td>
                         <td>{{.House}}</td>
                         <td>{{.Car}}</td>
+                        <td>{{.HaveChild}}</td>
                     {{end}}
                 </tr>
             {{else}}

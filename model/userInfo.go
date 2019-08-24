@@ -17,7 +17,7 @@ type UserInfo struct {
 	Nationality string
 	Education   string
 	Marriage    string
-	Occupation  string
+	Occupation  string// 职业没法抓
 	Income      string
 	House       string
 	Car         string

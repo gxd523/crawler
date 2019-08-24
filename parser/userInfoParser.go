@@ -3,6 +3,7 @@ package parser
 import (
 	"crawler/engine"
 	"crawler/model"
+	"fmt"
 	"log"
 	"regexp"
 	"strconv"
@@ -12,8 +13,8 @@ import (
 const (
 	// "basicInfo":["未婚","30岁","射手座(11.22-12.21)","160cm","43kg","工作地:上海虹口区","月收入:1.2-2万","金融","硕士"],
 	// "detailInfo":["汉族","籍贯:上海","体型:运动员型","稍微抽一点烟","不喝酒","和家人同住","未买车","没有小孩","是否想要孩子:不想要孩子","何时结婚:时机成熟就结婚"]
-	// "educationString"
-	userInfoRegex = `"basicInfo"[^[]+([^]]+])[^[]+([^]]+])[\d\D]+?"educationString"`
+	// "educationString": "大专"
+	userInfoRegex = `"basicInfo"[^[]+([^]]+])[^[]+([^]]+])[\d\D]+?"educationString"[^"]+"([^"]+)`
 
 	// http://album.zhenai.com/u/1599085703
 	idRegex = `http://album.zhenai.com/u/([\d]+)`
@@ -45,14 +46,14 @@ func ParseUserInfo(bytes []byte, name string, gender string, url string) engine.
 		for k, v := range userInfoSubmatch {
 			switch k {
 			case 1:
+				fmt.Printf("%s....%s\n", url, v)
 				userInfo.Marriage = deserializeSlice(v)[0]
 				userInfo.Age = stringToInt(getSubMatch(ageCompile, v))
-				userInfo.Xinzuo = string(xinzuoCompile.FindSubmatch(v)[1])
+				userInfo.Xinzuo = getSubMatch(xinzuoCompile, v)
 				userInfo.Height = stringToInt(getSubMatch(heightCompile, v))
 				userInfo.Weight = stringToInt(getSubMatch(weightCompile, v))
-				userInfo.City = string(cityCompile.FindSubmatch(v)[1])
+				userInfo.City = getSubMatch(cityCompile, v)
 				userInfo.Income = getSubMatch(incomeCompile, v)
-				userInfo.Education = getSubMatch(educationCompile, v)
 				break
 			case 2:
 				userInfo.Nationality = getSubMatch(nationalityCompile, v)
@@ -61,6 +62,9 @@ func ParseUserInfo(bytes []byte, name string, gender string, url string) engine.
 				userInfo.Car = getMatchCar(v)
 				userInfo.WannaChild = getSubMatch(wannaChildCompile, v)
 				userInfo.HaveChild = getMatchChild(v)
+				break
+			case 3:
+				userInfo.Education = string(v)
 				break
 			}
 		}
