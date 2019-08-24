@@ -7,7 +7,7 @@ import (
 
 const (
 	// <a href="http://album.zhenai.com/u/1599085703" target="_blank">伟伟</a>
-	userListRegex = `<a[\s]+href="(http://album.zhenai.com/u/[\d]+)"[^>]*>([^<]+)</a>`
+	userListRegex = `<tbody>[^a]+a[\s]+href="(http://album.zhenai.com/u/[\d]+)[^\p{Han}]+([^<]+)[^性]+性别：[^\p{Han}]+([\p{Han}])士(.|\n)+?</tbody>`
 
 	// <a href="http://www.zhenai.com/zhenghun/shanghai/2">2</a>
 	userListPageRegex = `<a[\s]+href="(http://www.zhenai.com/zhenghun/shanghai/[^"]+)">([^<]+)</a>`
@@ -26,7 +26,7 @@ func ParseUserList(bytes []byte, _ string) engine.ParseResult {
 		parseResult.Requests = append(parseResult.Requests, engine.Request{
 			Url:       string(userSubMatches[1]),
 			Name:      string(userSubMatches[2]),
-			ParseFunc: ParseUserInfoWrapper(string(userSubMatches[2])),
+			ParseFunc: ParseUserInfoWrapper(string(userSubMatches[2]), string(userSubMatches[3])),
 		})
 	}
 
@@ -41,8 +41,8 @@ func ParseUserList(bytes []byte, _ string) engine.ParseResult {
 	return parseResult
 }
 
-func ParseUserInfoWrapper(name string) engine.ParseFunc { // 编程技巧
+func ParseUserInfoWrapper(name string, gender string) engine.ParseFunc { // 编程技巧
 	return func(bytes []byte, url string) engine.ParseResult {
-		return ParseUserInfo(bytes, name, url)
+		return ParseUserInfo(bytes, name, gender, url)
 	}
 }

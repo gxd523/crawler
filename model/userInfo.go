@@ -6,18 +6,23 @@ import (
 )
 
 type UserInfo struct {
-	Name       string
-	Gender     string
-	Age        int
-	Height     int
-	Income     string
-	Marriage   string
-	Education  string
-	Occupation string
-	Birthplace string
-	House      string
-	Car        string
-	Xinzuo     string
+	Name        string
+	Gender      string
+	Age         int
+	Height      int
+	Weight      int
+	Birthplace  string
+	Xinzuo      string
+	City        string
+	Nationality string
+	Education   string
+	Marriage    string
+	Occupation  string
+	Income      string
+	House       string
+	Car         string
+	HaveChild   string
+	WannaChild  string
 }
 
 func (u *UserInfo) Print(url string, index int) {

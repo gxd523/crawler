@@ -9,6 +9,7 @@ import (
 	"golang.org/x/text/encoding/unicode"
 	"golang.org/x/text/transform"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"time"
 )
@@ -16,6 +17,7 @@ import (
 var rateLimiter = time.Tick(200 * time.Millisecond)
 
 func Fetch(url string) ([]byte, error) {
+	log.Printf("Fetching url=%s\n", url)
 	<-rateLimiter
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
