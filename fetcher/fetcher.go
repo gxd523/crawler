@@ -2,7 +2,6 @@ package fetcher
 
 import (
 	"bufio"
-	"demos/util"
 	"fmt"
 	"golang.org/x/net/html/charset"
 	"golang.org/x/text/encoding"
@@ -41,7 +40,7 @@ func Fetch(url string) ([]byte, error) {
 	defer func() {
 		err := resp.Body.Close()
 		if err != nil {
-			util.PanicWrapper(err)
+			panic(err)
 		}
 	}()
 	if resp.StatusCode != http.StatusOK {
