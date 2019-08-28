@@ -4,7 +4,6 @@ import (
 	"crawler/engine"
 	"crawler/model"
 	"fmt"
-	"log"
 	"regexp"
 	"strconv"
 	"strings"
@@ -30,7 +29,6 @@ var (
 	xinzuoCompile      = regexp.MustCompile(`([\p{Han}]{2}座)\([\d-.]+\)`)
 	cityCompile        = regexp.MustCompile(`"工作地:([^"]+)"`)
 	birthplaceCompile  = regexp.MustCompile(`"籍贯:([^"]+)"`)
-	educationCompile   = regexp.MustCompile(`"educationString"[^"]+"([^"]+)`)
 	nationalityCompile = regexp.MustCompile(`"([\p{Han}]+族)"`)
 	wannaChildCompile  = regexp.MustCompile(`"是否想要孩子:([^"]+)"`)
 )
@@ -114,7 +112,7 @@ func getMatchHouse(bytes []byte) string {
 	case strings.Contains(s, "打算婚后购房"):
 		return "打算婚后购房"
 	default:
-		log.Printf("未找到购房信息....%s\n", bytes)
+		//log.Printf("未找到购房信息....%s\n", bytes)
 		return "未填写"
 	}
 }
@@ -127,7 +125,7 @@ func getMatchCar(bytes []byte) string {
 	case strings.Contains(s, "已买车"):
 		return "已买车"
 	default:
-		log.Printf("未找到购车信息....%s\n", bytes)
+		//log.Printf("未找到购车信息....%s\n", bytes)
 		return "未填写"
 	}
 }
@@ -144,7 +142,7 @@ func getMatchChild(bytes []byte) string {
 	case strings.Contains(s, "有孩子且住在一起"):
 		return "有孩子且住在一起"
 	default:
-		log.Printf("未找到子女信息....%s\n", bytes)
+		//log.Printf("未找到子女信息....%s\n", bytes)
 		return "未填写"
 	}
 }
