@@ -20,9 +20,9 @@ func (q *QueueScheduler) WorkerReady(w chan engine.Request) {
 }
 
 func (q *QueueScheduler) Run() {
+	q.requestChan = make(chan engine.Request)
+	q.workerChan = make(chan chan engine.Request)
 	go func() {
-		q.requestChan = make(chan engine.Request)
-		q.workerChan = make(chan chan engine.Request)
 		var requestQueue []engine.Request
 		var workerQueue []chan engine.Request
 
