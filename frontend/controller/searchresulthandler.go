@@ -42,11 +42,11 @@ func (handler SearchResultHandler) ServeHTTP(w http.ResponseWriter, req *http.Re
 func (handler SearchResultHandler) getSearchResult(q string, from int) (model.SearchResult, error) {
 	var searchResult model.SearchResult
 
-	elasticSearchResult, err := handler.client.
-		Search("dating_userinfo").
-		Query(elastic.NewQueryStringQuery(rewriteQueryString(q))).
-		From(from).
-		Do(context.Background())
+	search := handler.client.Search("dating_userinfo")
+	if q != "" {
+		search.Query(elastic.NewQueryStringQuery(rewriteQueryString(q)))
+	}
+	elasticSearchResult, err := search.From(from).Do(context.Background())
 
 	if err != nil {
 		return searchResult, nil

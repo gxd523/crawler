@@ -7,7 +7,7 @@ import (
 
 const (
 	// <a href="http://album.zhenai.com/u/1599085703" target="_blank">伟伟</a>
-	userListRegex = `<tbody>[^a]+a[\s]+href="(http://album.zhenai.com/u/[\d]+)[^\p{Han}]+([^<]+)[^性]+性别：[^\p{Han}]+([\p{Han}])士(.|\n)+?</tbody>`
+	userListRegex = `<tbody>[^a]+a[\s]+href="(http://album.zhenai.com/u/[\d]+)[^>]+>([^<]+)[^性]+性别：[^\p{Han}]+([\p{Han}])士(.|\n)+?</tbody>`
 
 	// <a href="http://www.zhenai.com/zhenghun/shanghai/2">2</a>
 	userListPageRegex = `<a[\s]+href="(http://www.zhenai.com/zhenghun/shanghai/[^"]+)">([^<]+)</a>`
