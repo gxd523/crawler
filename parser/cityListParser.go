@@ -17,7 +17,7 @@ func ParseCityList(bytes []byte, _ string) engine.ParseResult {
 		parseResult.Requests = append(parseResult.Requests, engine.Request{
 			Url:       string(citySubMatches[1]),
 			Name:      string(citySubMatches[2]),
-			ParseFunc: ParseUserList,
+			ParseFunc: ParseCity,
 		})
 	}
 

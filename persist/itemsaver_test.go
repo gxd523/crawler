@@ -12,21 +12,26 @@ import (
 func TestSave(t *testing.T) {
 	expectedItem := engine.Item{
 		Type: "zhenai",
-		Id:   "",
-		Url:  "",
+		Id:   "1073350475",
+		Url:  "http://album.zhenai.com/u/1073350475",
 		Payload: model.UserInfo{
-			Name:       "郭晓东",
-			Gender:     "male",
-			Age:        28,
-			Height:     176,
-			Income:     "1-2W",
-			Marriage:   "married",
-			Education:  "college",
-			Occupation: "Hangzhou",
-			Birthplace: "Xinjiang",
-			House:      "Yes",
-			Car:        "No",
-			Xinzuo:     "Gemini",
+			Name:        "燕子",
+			Gender:      "女",
+			Age:         33,
+			Height:      166,
+			Weight:      59,
+			Birthplace:  "甘肃平凉",
+			Xinzuo:      "摩羯座",
+			City:        "伊犁哈萨克自治州伊宁",
+			Nationality: "回族",
+			Education:   "高中及以下",
+			Marriage:    "离异",
+			Occupation:  "",
+			Income:      "5-8千",
+			House:       "已购房",
+			Car:         "未买车",
+			HaveChild:   "有孩子且住在一起",
+			WannaChild:  "视情况而定",
 		},
 	}
 
@@ -39,7 +44,7 @@ func TestSave(t *testing.T) {
 		panic(err)
 	}
 
-	err = save(expectedItem, client, index)
+	err = Save(expectedItem, client, index)
 	if err != nil {
 		panic(err)
 	}

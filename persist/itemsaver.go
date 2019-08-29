@@ -24,7 +24,7 @@ func ItemSaver(index string) (chan engine.Item, error) {
 			userInfoCount++
 			userInfo := item.Payload.(model.UserInfo)
 			userInfo.Print(item.Url, userInfoCount)
-			err := save(item, client, index)
+			err := Save(item, client, index)
 			if err != nil {
 				log.Println(err)
 				continue
@@ -34,7 +34,7 @@ func ItemSaver(index string) (chan engine.Item, error) {
 	return itemChan, nil
 }
 
-func save(item engine.Item, client *elastic.Client, index string) error {
+func Save(item engine.Item, client *elastic.Client, index string) error {
 	if item.Id == "" || item.Type == "" {
 		return errors.New("id or type is empty")
 	}
