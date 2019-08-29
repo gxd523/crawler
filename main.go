@@ -1,14 +1,16 @@
 package main
 
 import (
+	"crawler/config"
 	"crawler/engine"
 	"crawler/parser"
 	"crawler/persist"
 	"crawler/scheduler"
+	"fmt"
 )
 
 func main() {
-	itemChan, err := persist.ItemSaver("dating_userinfo")
+	itemChan, err := persist.ItemSaver(fmt.Sprintf(":%d", config.ItemSaverPort))
 	if err != nil {
 		panic(err)
 	}

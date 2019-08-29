@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	"crawler/config"
 	"crawler/engine"
 	"crawler/frontend/model"
 	"crawler/frontend/view"
@@ -42,7 +43,7 @@ func (handler SearchResultHandler) ServeHTTP(w http.ResponseWriter, req *http.Re
 func (handler SearchResultHandler) getSearchResult(q string, from int) (model.SearchResult, error) {
 	var searchResult model.SearchResult
 
-	search := handler.client.Search("dating_userinfo")
+	search := handler.client.Search(config.ElasticIndex)
 	if q != "" {
 		search.Query(elastic.NewQueryStringQuery(rewriteQueryString(q)))
 	}

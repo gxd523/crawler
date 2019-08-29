@@ -3,7 +3,6 @@ package parser
 import (
 	"crawler/engine"
 	"crawler/model"
-	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -44,7 +43,6 @@ func ParseUserInfo(bytes []byte, name string, gender string, url string) engine.
 		for k, v := range userInfoSubmatch {
 			switch k {
 			case 1:
-				fmt.Printf("%s....%s\n", url, v)
 				userInfo.Marriage = deserializeSlice(v)[0]
 				userInfo.Age = stringToInt(getSubMatch(ageCompile, v))
 				userInfo.Xinzuo = getSubMatch(xinzuoCompile, v)

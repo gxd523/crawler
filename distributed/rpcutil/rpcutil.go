@@ -1,7 +1,6 @@
 package rpcutil
 
 import (
-	"fmt"
 	"log"
 	"net"
 	"net/rpc"
@@ -21,7 +20,6 @@ func NewServeRpc(host string, service interface{}) error {
 			log.Printf("accept error: %v", err)
 			continue
 		}
-		fmt.Println("......")
 		go jsonrpc.ServeConn(conn)
 	}
 }
