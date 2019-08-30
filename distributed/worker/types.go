@@ -81,7 +81,7 @@ func SerializeParseResult(result *engine.ParseResult) SerializedParseResult {
 	return parseResult
 }
 
-func DeserializeParseResult(result SerializedParseResult) engine.ParseResult {
+func DeserializeParseResult(result *SerializedParseResult) *engine.ParseResult {
 	parseResult := engine.ParseResult{
 		Item: result.Item,
 	}
@@ -93,5 +93,5 @@ func DeserializeParseResult(result SerializedParseResult) engine.ParseResult {
 		}
 		parseResult.Requests = append(parseResult.Requests, request)
 	}
-	return parseResult
+	return &parseResult
 }

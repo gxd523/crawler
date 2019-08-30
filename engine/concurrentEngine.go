@@ -4,10 +4,13 @@ import (
 	"log"
 )
 
+type Processor func(Request) (*ParseResult, error)
+
 type ConcurrentEngine struct {
-	Scheduler   Scheduler
-	WorkerCount int
-	ItemChan    chan Item
+	Scheduler        Scheduler
+	WorkerCount      int
+	ItemChan         chan Item
+	RequestProcessor Processor
 }
 
 var visitedUrlMap = make(map[string]bool)
@@ -17,7 +20,7 @@ func (engine *ConcurrentEngine) Start(seeds ...Request) {
 	engine.Scheduler.Run()
 
 	for i := 0; i < engine.WorkerCount; i++ { // 开WorkerCount个协程
-		doWork(engine.Scheduler, engine.Scheduler.WorkerChan(), resultChan)
+		engine.doWork(engine.Scheduler, engine.Scheduler.WorkerChan(), resultChan)
 	}
 
 	engine.submitRequest(seeds)
@@ -50,12 +53,12 @@ func isDuplicateUrl(url string) bool { // TODO md5
 	}
 }
 
-func doWork(notifier WorkerReadyNotifier, requestChan chan Request, resultChan chan ParseResult) {
+func (engine *ConcurrentEngine) doWork(notifier WorkerReadyNotifier, requestChan chan Request, resultChan chan ParseResult) {
 	go func() {
 		for {
 			notifier.WorkerReady(requestChan)
 			req := <-requestChan
-			if parseResult, err := Work(req); err == nil {
+			if parseResult, err := engine.RequestProcessor(req); err == nil {
 				resultChan <- *parseResult
 			} else {
 				log.Print(err)

@@ -2,14 +2,20 @@ package main
 
 import (
 	"crawler/distributed/config"
+	itemSaverClient "crawler/distributed/persist/client"
+	workerClient "crawler/distributed/worker/client"
 	"crawler/engine"
 	"crawler/parser"
-	"crawler/persist"
 	"crawler/scheduler"
+	"fmt"
 )
 
 func main() {
-	itemChan, err := persist.ItemSaver("dating_userinfo")
+	itemChan, err := itemSaverClient.ItemSaver(fmt.Sprintf(":%d", config.ItemSaverPort))
+	if err != nil {
+		panic(err)
+	}
+	processor, err := workerClient.CreateProcessor()
 	if err != nil {
 		panic(err)
 	}
@@ -17,7 +23,7 @@ func main() {
 		Scheduler:        &scheduler.QueueScheduler{},
 		WorkerCount:      99,
 		ItemChan:         itemChan,
-		RequestProcessor: engine.Work,
+		RequestProcessor: processor,
 	}
 
 	myEngine.Start(engine.Request{

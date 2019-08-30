@@ -1,9 +1,9 @@
 package main
 
 import (
-	"crawler/config"
+	"crawler/distributed/config"
+	"crawler/distributed/persist"
 	"crawler/distributed/rpcutil"
-	"crawler/persist"
 	"fmt"
 	"gopkg.in/olivere/elastic.v6"
 	"log"
@@ -20,7 +20,7 @@ func newItemSaverServeRpc(host string, index string) error {
 		return err
 	}
 
-	return rpcutil.NewServeRpc(host, &persist.ItemSaverService{
+	return rpcutil.NewServeRpc(host, &persist.ItemSaverService{ // 注意这里要取地址，因为Receiver也是指针类型
 		Client: client,
 		Index:  index,
 	})
