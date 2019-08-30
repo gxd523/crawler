@@ -1,32 +1,28 @@
-package persist
+package client
 
 import (
 	"context"
+	"crawler/distributed/config"
+	"crawler/distributed/rpcutil"
 	"crawler/engine"
-	"crawler/model"
 	"errors"
 	"gopkg.in/olivere/elastic.v6"
 	"log"
 )
 
-func ItemSaver(index string) (chan engine.Item, error) {
+func ItemSaver(host string) (chan engine.Item, error) {
 	itemChan := make(chan engine.Item)
-	client, err := elastic.NewClient(
-		// Must turn off sniff in docker
-		elastic.SetSniff(false))
-
+	client, err := rpcutil.NewClient(host)
 	if err != nil {
 		return nil, err
 	}
 	go func() {
-		userInfoCount := 0
 		for item := range itemChan {
-			userInfoCount++
-			userInfo := item.Payload.(model.UserInfo)
-			userInfo.Print(item.Url, userInfoCount)
-			err := save(item, client, index)
-			if err != nil {
-				log.Println(err)
+			// call RPC to save item
+			var result string
+			err := client.Call(config.ItemSaverRpc, item, &result)
+			if err != nil || result != "ok" {
+				log.Printf("ItemSaverRpc Error: %v, result: %s\n", err, result)
 				continue
 			}
 		}
@@ -34,7 +30,7 @@ func ItemSaver(index string) (chan engine.Item, error) {
 	return itemChan, nil
 }
 
-func save(item engine.Item, client *elastic.Client, index string) error {
+func Save(item engine.Item, client *elastic.Client, index string) error {
 	if item.Id == "" || item.Type == "" {
 		return errors.New("id or type is empty")
 	}

@@ -7,12 +7,38 @@ type Item struct {
 	Payload interface{}
 }
 
-type ParseFunc func(bytes []byte, url string) ParseResult
+type ParseFunc func(bytes []byte, url string) *ParseResult
+
+type Parser interface {
+	Parse(bytes []byte, url string) *ParseResult
+
+	Serialize() (funcName string, args interface{})
+}
+
+type FuncParser struct {
+	ParseFunc ParseFunc
+	FuncName  string
+}
+
+func (f *FuncParser) Parse(bytes []byte, url string) *ParseResult {
+	return f.ParseFunc(bytes, url)
+}
+
+func (f *FuncParser) Serialize() (funcName string, args interface{}) {
+	return f.FuncName, nil
+}
+
+func NewFuncParser(parseFunc ParseFunc, funcName string) *FuncParser {
+	return &FuncParser{
+		ParseFunc: parseFunc,
+		FuncName:  funcName,
+	}
+}
 
 type Request struct {
-	Url       string
-	Name      string
-	ParseFunc ParseFunc // 编程技巧，函数式编程
+	Url    string
+	Name   string
+	Parser Parser
 }
 
 type ParseResult struct {

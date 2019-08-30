@@ -44,7 +44,7 @@ func TestSave(t *testing.T) {
 		panic(err)
 	}
 
-	err = Save(expectedItem, client, index)
+	err = save(expectedItem, client, index)
 	if err != nil {
 		panic(err)
 	}

@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"crawler/distributed/config"
 	"crawler/engine"
 	"crawler/model"
 	"regexp"
@@ -32,11 +33,11 @@ var (
 	wannaChildCompile  = regexp.MustCompile(`"是否想要孩子:([^"]+)"`)
 )
 
-func ParseUserInfo(bytes []byte, name string, gender string, url string) engine.ParseResult {
+func parseUserInfo(bytes []byte, username string, gender string, url string) *engine.ParseResult {
 	userInfoSubmatch := userInfoCompile.FindSubmatch(bytes)
 
 	userInfo := model.UserInfo{}
-	userInfo.Name = name
+	userInfo.Name = username
 	userInfo.Gender = gender
 
 	if userInfoSubmatch != nil {
@@ -71,7 +72,7 @@ func ParseUserInfo(bytes []byte, name string, gender string, url string) engine.
 		Url:     url,
 		Payload: userInfo,
 	}
-	return engine.ParseResult{Item: &item}
+	return &engine.ParseResult{Item: &item}
 }
 
 func deserializeSlice(s []byte) []string {
@@ -143,4 +144,17 @@ func getMatchChild(bytes []byte) string {
 		//log.Printf("未找到子女信息....%s\n", bytes)
 		return "未填写"
 	}
+}
+
+type UserInfoParser struct {
+	Username string
+	Gender   string
+}
+
+func (p *UserInfoParser) Parse(bytes []byte, url string) *engine.ParseResult {
+	return parseUserInfo(bytes, p.Username, p.Gender, url)
+}
+
+func (p *UserInfoParser) Serialize() (funcName string, args interface{}) {
+	return config.ParseUserInfo, [2]string{p.Username, p.Gender}
 }

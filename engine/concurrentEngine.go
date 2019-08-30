@@ -55,7 +55,7 @@ func doWork(notifier WorkerReadyNotifier, requestChan chan Request, resultChan c
 		for {
 			notifier.WorkerReady(requestChan)
 			req := <-requestChan
-			if parseResult, err := work(req); err == nil {
+			if parseResult, err := Work(req); err == nil {
 				resultChan <- *parseResult
 			} else {
 				log.Print(err)

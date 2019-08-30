@@ -2,10 +2,9 @@ package engine
 
 import "crawler/fetcher"
 
-func work(req Request) (*ParseResult, error) {
+func Work(req Request) (*ParseResult, error) {
 	if bytes, err := fetcher.Fetch(req.Url); err == nil {
-		parseResult := req.ParseFunc(bytes, req.Url)
-		return &parseResult, nil
+		return req.Parser.Parse(bytes, req.Url), nil
 	} else {
 		return nil, err
 	}

@@ -2,7 +2,7 @@ package controller
 
 import (
 	"context"
-	"crawler/config"
+	"crawler/distributed/config"
 	"crawler/engine"
 	"crawler/frontend/model"
 	"crawler/frontend/view"

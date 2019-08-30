@@ -1,16 +1,16 @@
 package main
 
 import (
-	"crawler/config"
+	"crawler/distributed/config"
+	"crawler/distributed/persist/client"
 	"crawler/engine"
 	"crawler/parser"
-	"crawler/persist"
 	"crawler/scheduler"
 	"fmt"
 )
 
 func main() {
-	itemChan, err := persist.ItemSaver(fmt.Sprintf(":%d", config.ItemSaverPort))
+	itemChan, err := client.ItemSaver(fmt.Sprintf(":%d", config.ItemSaverPort))
 	if err != nil {
 		panic(err)
 	}
@@ -21,7 +21,7 @@ func main() {
 	}
 
 	myEngine.Start(engine.Request{
-		Url:       "http://www.zhenai.com/zhenghun",
-		Name:      "城市列表",
-		ParseFunc: parser.ParseCityList})
+		Url:    "http://www.zhenai.com/zhenghun",
+		Name:   "城市列表",
+		Parser: engine.NewFuncParser(parser.ParseCityList, config.ParseCityList)})
 }

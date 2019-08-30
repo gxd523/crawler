@@ -18,7 +18,7 @@ func (*SimpleEngine) Start(seeds ...Request) {
 
 		log.Printf("left request count=%d, Fetching->%s...%s\n", len(queue), req.Name, req.Url)
 
-		if parseResult, err := work(req); err == nil {
+		if parseResult, err := Work(req); err == nil {
 			queue.Push(parseResult.Requests...)
 
 			if parseResult.Item != nil {
