@@ -2,6 +2,7 @@ package fetcher
 
 import (
 	"bufio"
+	"crawler/distributed/config"
 	"fmt"
 	"golang.org/x/net/html/charset"
 	"golang.org/x/text/encoding"
@@ -13,10 +14,10 @@ import (
 	"time"
 )
 
-var rateLimiter = time.Tick(200 * time.Millisecond)
+var rateLimiter = time.Tick(time.Second / config.Qps)
 
 func Fetch(url string) ([]byte, error) {
-	log.Printf("Fetching url=%s\n", url)
+	log.Printf("Fetching url->%s\n", url)
 	<-rateLimiter
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
