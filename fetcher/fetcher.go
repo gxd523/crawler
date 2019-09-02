@@ -32,7 +32,7 @@ func Fetch(url string) ([]byte, error) {
 		time.StampMilli,
 	)
 	client := http.Client{
-		Timeout: 2 * time.Second,
+		Timeout: 5 * time.Second,
 	}
 	resp, err := client.Do(request)
 	if err != nil {

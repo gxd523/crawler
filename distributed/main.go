@@ -18,7 +18,7 @@ import (
 var (
 	itemSaverHost = flag.String("itemsaver_host", "", "itemsaver host")
 	workerHosts   = flag.String("worker_hosts", "", "worker hosts (comma separated)")
-	duplicateHost   = flag.String("duplicate_host", "", "duplicate host")
+	duplicateHost = flag.String("duplicate_host", "", "duplicate host")
 )
 
 func main() {
@@ -29,12 +29,11 @@ func main() {
 	}
 
 	clientChan := createClientPool(strings.Split(*workerHosts, ","))
-	processor := workerClient.CreateProcessor(clientChan)
 	myEngine := engine.ConcurrentEngine{
 		Scheduler:            &scheduler.QueueScheduler{},
 		WorkerCount:          99,
 		ItemChan:             itemChan,
-		RequestProcessorFunc: processor,
+		RequestProcessorFunc: workerClient.CreateProcessor(clientChan),
 		IsDuplicateUrlFunc:   duplicateClient.CreateIsDuplicateUrlFunc(*duplicateHost),
 	}
 

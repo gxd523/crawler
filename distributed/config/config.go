@@ -12,5 +12,5 @@ const (
 	ParseUserInfo = "ParseUserInfo"
 
 	// Rate limit
-	Qps = 5
+	Qps = 10
 )
