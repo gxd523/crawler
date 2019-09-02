@@ -5,6 +5,7 @@ const (
 
 	ItemSaverRpc = "ItemSaverService.Save"
 	WorkerRpc    = "CrawlService.Process"
+	DuplicateRpc    = "RepeatService.IsDuplicateUrl"
 
 	ParseCityList = "ParseCityList"
 	ParseCity     = "ParseCity"

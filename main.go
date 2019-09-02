@@ -14,10 +14,11 @@ func main() {
 		panic(err)
 	}
 	myEngine := engine.ConcurrentEngine{
-		Scheduler:        &scheduler.QueueScheduler{},
-		WorkerCount:      99,
-		ItemChan:         itemChan,
-		RequestProcessor: engine.Work,
+		Scheduler:            &scheduler.QueueScheduler{},
+		WorkerCount:          99,
+		ItemChan:             itemChan,
+		RequestProcessorFunc: engine.Work,
+		IsDuplicateUrlFunc:   engine.IsDuplicateUrl,
 	}
 
 	myEngine.Start(engine.Request{

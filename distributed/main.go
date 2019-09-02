@@ -2,6 +2,7 @@ package main
 
 import (
 	"crawler/distributed/config"
+	duplicateClient "crawler/distributed/duplicate/client"
 	itemSaverClient "crawler/distributed/persist/client"
 	"crawler/distributed/rpcutil"
 	workerClient "crawler/distributed/worker/client"
@@ -17,6 +18,7 @@ import (
 var (
 	itemSaverHost = flag.String("itemsaver_host", "", "itemsaver host")
 	workerHosts   = flag.String("worker_hosts", "", "worker hosts (comma separated)")
+	duplicateHost   = flag.String("duplicate_host", "", "duplicate host")
 )
 
 func main() {
@@ -29,10 +31,11 @@ func main() {
 	clientChan := createClientPool(strings.Split(*workerHosts, ","))
 	processor := workerClient.CreateProcessor(clientChan)
 	myEngine := engine.ConcurrentEngine{
-		Scheduler:        &scheduler.QueueScheduler{},
-		WorkerCount:      99,
-		ItemChan:         itemChan,
-		RequestProcessor: processor,
+		Scheduler:            &scheduler.QueueScheduler{},
+		WorkerCount:          99,
+		ItemChan:             itemChan,
+		RequestProcessorFunc: processor,
+		IsDuplicateUrlFunc:   duplicateClient.CreateIsDuplicateUrlFunc(*duplicateHost),
 	}
 
 	myEngine.Start(engine.Request{

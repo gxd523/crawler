@@ -8,7 +8,7 @@ import (
 )
 
 // clients []*rpc.Client
-func CreateProcessor(clientChan chan *rpc.Client) engine.Processor {
+func CreateProcessor(clientChan chan *rpc.Client) engine.RequestProcessorFunc {
 	return func(req engine.Request) (*engine.ParseResult, error) {
 		serializedRequest := worker.SerializeRequest(req)
 		var serializedParseResult worker.SerializedParseResult

@@ -4,13 +4,16 @@ import (
 	"log"
 )
 
-type Processor func(Request) (*ParseResult, error)
+type RequestProcessorFunc func(Request) (*ParseResult, error)
+
+type IsDuplicateUrlFunc func(url string) bool
 
 type ConcurrentEngine struct {
-	Scheduler        Scheduler
-	WorkerCount      int
-	ItemChan         chan Item
-	RequestProcessor Processor
+	Scheduler            Scheduler
+	WorkerCount          int
+	ItemChan             chan Item
+	RequestProcessorFunc RequestProcessorFunc
+	IsDuplicateUrlFunc   IsDuplicateUrlFunc
 }
 
 var visitedUrlMap = make(map[string]bool)
@@ -36,20 +39,11 @@ func (engine *ConcurrentEngine) Start(seeds ...Request) {
 
 func (engine *ConcurrentEngine) submitRequest(requests []Request) {
 	for _, req := range requests {
-		if isDuplicateUrl(req.Url) {
+		if engine.IsDuplicateUrlFunc(req.Url) {
 			//log.Printf("Duplicate request...%s", req.Url)
 		} else {
 			engine.Scheduler.Submit(req)
 		}
-	}
-}
-
-func isDuplicateUrl(url string) bool { // TODO md5
-	if isVisited := visitedUrlMap[url]; isVisited {
-		return true
-	} else {
-		visitedUrlMap[url] = true
-		return false
 	}
 }
 
@@ -58,7 +52,7 @@ func (engine *ConcurrentEngine) doWork(notifier WorkerReadyNotifier, requestChan
 		for {
 			notifier.WorkerReady(requestChan)
 			req := <-requestChan
-			if parseResult, err := engine.RequestProcessor(req); err == nil {
+			if parseResult, err := engine.RequestProcessorFunc(req); err == nil {
 				resultChan <- *parseResult
 			} else {
 				log.Print(err)
